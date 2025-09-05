@@ -1,4 +1,6 @@
 {
   "client_id"     : "TraktClientID",
-  "client_secret" : "TraktClientSecret"
+  "client_secret" : "TraktClientSecret",
+  "host"          : "0.0.0.0",
+  "port"          : "8080"
 }

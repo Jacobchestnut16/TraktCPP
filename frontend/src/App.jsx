@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+// frontend/src/App.jsx
+import { useEffect, useState } from "react";
+import { getAnalytics } from "./api/fetchData";
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+function App() {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        getAnalytics().then(setData);
+    }, []);
+
+    if (!data) return <p>Loading...</p>;
+
+    return (
+        <div>
+            <h1>Analytics</h1>
+            <table>
+                <thead>
+                <td>Title</td>
+                <td>Score</td>
+                <td>Views</td>
+                </thead>
+                <tbody>
+                {data.map((item, index) => (
+                    <tr>
+                        <td><h2>{item.movie}</h2></td>
+                        <td>{item.score}</td>
+                        <td>{item.views}</td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+        </div>
+    );
 }
 
-export default App
+export default App;
+

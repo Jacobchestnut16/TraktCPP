@@ -9,6 +9,7 @@
 struct TraktConfig {
     QString clientId;
     QString clientSecret;
+    QString tmdb_bearer;
     std::string host;
     int port;
     // QString accessToken; // future: store/retrieve access token

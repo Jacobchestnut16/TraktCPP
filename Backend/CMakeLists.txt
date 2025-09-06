@@ -19,7 +19,9 @@ add_executable(Backend src/main.cpp
         src/data_store.cpp
         src/data_store.h
         src/routes.cpp
-        src/routes.h)
+        src/routes.h
+        src/tmdb_api.cpp
+        src/tmdb_api.h)
 
 add_executable(AppTest tests/apiTest.cpp)
 

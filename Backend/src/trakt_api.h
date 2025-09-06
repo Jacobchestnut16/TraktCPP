@@ -7,11 +7,14 @@
 #include <QJsonArray>
 #include <config.h>
 
-QString const BASE = "https://api.trakt.tv/";
+
+QString const TRAKT_BASE = "https://api.trakt.tv";
 
 QJsonArray makeRequestNoAuth(const QString &endpoint, const TraktConfig &config);
 
+
 // TraktAPI trakt(cfg);
 
+// todo: configure the TraktAPI constructor that sets everything in the class
 
 #endif //BACKEND_TRAKT_API_H

@@ -7,9 +7,33 @@
 
 // registerRoutes(svr, trakt, store);
 
-class routes {
+// todo: set a function that registers all found routes from the TraktAPI
 
+#pragma once
+#include "httplib.h"
+#include "json.hpp"
+#include <functional>
+#include <string>
+#include <unordered_map>
+#include <QJsonArray>
+
+using json = nlohmann::json;
+using EndpointHandler = std::function<json(const httplib::Request&)>;
+
+
+
+class Routes {
+public:
+    void registerEndpoint(const std::string& path, const json& staticData);
+    void bindToServer(httplib::Server& svr);
+
+private:
+    std::unordered_map<std::string, EndpointHandler> handlers;
 };
+
+json qJsonArrayToJson(QJsonArray array);
+
+void registerThreeRoutes(Routes& routes, const std::string& path, const json& movieData, const json& showData);
 
 
 #endif //BACKEND_ROUTES_H

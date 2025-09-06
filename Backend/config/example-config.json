@@ -1,6 +1,7 @@
 {
   "client_id"     : "TraktClientID",
   "client_secret" : "TraktClientSecret",
+  "tmdb_bearer"   : "TMDBAPIReadAccessToken",
   "host"          : "0.0.0.0",
-  "port"          : "8080"
+  "port"          : 8080
 }

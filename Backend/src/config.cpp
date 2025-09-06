@@ -31,6 +31,7 @@ TraktConfig loadConfig(const QString &path) {
     QJsonObject obj = doc.object();
     config.clientId = obj.value("client_id").toString();
     config.clientSecret = obj.value("client_secret").toString();
+    config.tmdb_bearer = obj.value("tmdb_bearer").toString();
     config.host = obj.value("host").toString().toStdString();
     config.port = obj.value("port").toInt();
 

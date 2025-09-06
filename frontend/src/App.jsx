@@ -31,9 +31,10 @@ function App() {
             <table border="1" cellPadding="6">
                 <thead>
                 <tr>
+                    <th></th>
                     <th>Title</th>
-                    <th>Year</th>
-                    <th>Watchers</th>
+                    <th>Released on</th>
+                    <th>Votes</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -62,10 +63,10 @@ function App() {
             <table border="1" cellPadding="6">
                 <thead>
                 <tr>
+                    <th></th>
                     <th>Title</th>
-                    <th>Year</th>
-                    <th>Aired Episodes</th>
-                    <th>Watchers</th>
+                    <th>Released on</th>
+                    <th>Votes</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -97,9 +98,10 @@ function App() {
                 <table border="1" cellPadding="6">
                     <thead>
                     <tr>
+                        <th></th>
                         <th>Title</th>
-                        <th>Year</th>
-                        <th>Watchers</th>
+                        <th>Released on</th>
+                        <th>Votes</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -128,10 +130,10 @@ function App() {
                 <table border="1" cellPadding="6">
                     <thead>
                     <tr>
+                        <th></th>
                         <th>Title</th>
-                        <th>Year</th>
-                        <th>Aired Episodes</th>
-                        <th>Watchers</th>
+                        <th>Released on</th>
+                        <th>Votes</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -156,6 +158,7 @@ function App() {
                     </tbody>
                 </table>
             </div>
+            <p>Images powered by <a href='https://tmdb.org'>TMDB</a></p>
         </div>
     );
 }

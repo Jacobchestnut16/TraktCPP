@@ -17,7 +17,8 @@ int main(int argc, char *argv[])
 
 
     // Initialize the config
-    TraktConfig config = loadConfig("../config/config.json");
+    const char* configPath = std::getenv("CONFIG_PATH");
+    TraktConfig config = loadConfig(configPath);
 
 
     // Make a call
@@ -85,8 +86,8 @@ int main(int argc, char *argv[])
 
 
     routes.bindToServer(svr);
-    std::cout << "Server running on http://localhost:" << config.port << "\n";
-    svr.listen(config.host, 8080);
+    std::cout << "Server running on http://localhost:" << 8080 << "\n";
+    svr.listen("0.0.0.0", 8080);
 
     return 0;
 }

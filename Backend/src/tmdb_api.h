@@ -13,9 +13,9 @@
 
 
 // https://api.themoviedb.org/3/movie/popular
-QString const TMDB_BASE = "https://api.themoviedb.org/3";
+std::string const TMDB_BASE = "https://api.themoviedb.org/3";
 
-QJsonArray makeTMDBRequest(const QString &endpoint, const TraktConfig &config);
+nlohmann::json makeTMDBRequest(const std::string &endpoint, const TraktConfig &config);
 
 
 #endif //BACKEND_TMDB_API_H

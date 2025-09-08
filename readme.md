@@ -97,6 +97,19 @@ http://localhost:3001/api/popular
 ```
 http://localhost:3001/api/top_rated
 ```
+### Upcoming
+```
+http://localhost:3001/api/upcoming
+```
+#### In Theaters
+```
+http://localhost:3001/api/upcoming/in_theaters
+```
+#### Unreleased (Comming soon)
+```
+http://localhost:3001/api/upcoming/unreleased
+```
+
 
 #### Future endpoints
 

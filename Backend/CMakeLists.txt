@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 find_package(Qt5 REQUIRED Core Network)
 
+find_package(CURL REQUIRED)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/src)
@@ -26,4 +27,5 @@ add_executable(Backend src/main.cpp
 target_link_libraries(Backend
         Qt5::Core
         Qt5::Network
+        CURL::libcurl
 )

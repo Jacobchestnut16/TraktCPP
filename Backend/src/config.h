@@ -7,16 +7,16 @@
 #include <QString>
 
 struct TraktConfig {
-    QString clientId;
-    QString clientSecret;
-    QString tmdb_bearer;
+    std::string clientId;
+    std::string clientSecret;
+    std::string tmdb_bearer;
     std::string host;
     int port;
     // QString accessToken; // future: store/retrieve access token
 };
 
 // Load configuration from JSON file
-TraktConfig loadConfig(const QString &path);
+TraktConfig loadConfig(const std::string &path);
 
 
 #endif //BACKEND_CONFIG_H

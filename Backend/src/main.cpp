@@ -34,25 +34,37 @@ int main(int argc, char *argv[])
 
     // https://api.themoviedb.org/3/{movie/tv}/popular
     registerThreeRoutes(routes, "/popular",
-        qJsonArrayToJson(makeTMDBRequest(TMDB_BASE+"/movie/popular", config)),
-        qJsonArrayToJson(makeTMDBRequest(TMDB_BASE+"/tv/popular", config)));
+        makeTMDBRequest(TMDB_BASE+"/movie/popular", config),
+        makeTMDBRequest(TMDB_BASE+"/tv/popular", config));
 
 
     // https://api.themoviedb.org/3/{movie/tv}/top_rated
     registerThreeRoutes(routes, "/top_rated",
-    qJsonArrayToJson(makeTMDBRequest(TMDB_BASE+"/movie/top_rated", config)),
-    qJsonArrayToJson(makeTMDBRequest(TMDB_BASE+"/tv/top_rated", config)));
+    makeTMDBRequest(TMDB_BASE+"/movie/top_rated", config),
+    makeTMDBRequest(TMDB_BASE+"/tv/top_rated", config));
 
     // https://api.themoviedb.org/3/movie/now_playing
+    json in_theaters = makeTMDBRequest(TMDB_BASE+"/movie/now_playing", config);
+
     // https://api.themoviedb.org/3/movie/upcoming
-    // https://api.themoviedb.org/3/tv/airing_today
+    json unreleased = makeTMDBRequest(TMDB_BASE+"/movie/upcoming", config);
 
 
-    // https://api.trakt.tv/{movies/shows}/played/monthly
+    //upcoming
+    routes.registerEndpoint("/upcoming/in_theaters",in_theaters);
+    routes.registerEndpoint("/upcoming/unreleased",unreleased);
+    routes.registerEndpoint("/upcoming", json{
+    {"in_theaters", in_theaters},
+    {"unreleased",  unreleased}
+    });
 
 
+
+
+
+//    // https://api.trakt.tv/{movies/shows}/played/monthly
 //     QJsonArray movies_played = makeRequestNoAuth(TMDB_BASE+"/movies/played/monthly", config);
-//     QJsonArray showss_played = makeRequestNoAuth(TMDB_BASE+"/shows/played/monthly", config);
+//     QJsonArray shows_played = makeRequestNoAuth(TMDB_BASE+"/shows/played/monthly", config);
 //
 //
 //     // todo: transfer everything from trakt to

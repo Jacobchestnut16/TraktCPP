@@ -4,36 +4,40 @@
 
 #include "config.h"
 
-#include <QFile>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QString>
+#include <fstream>
+#include <iostream>
+#include "json.hpp"
 
 
-TraktConfig loadConfig(const QString &path) {
+TraktConfig loadConfig(const std::string& path) {
     TraktConfig config;
 
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly)) {
-        qWarning() << "Cannot open config file:" << path;
+    // open file
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        std::cerr << "Cannot open config file: " << path << "\n";
         return config;
     }
 
-    QByteArray data = file.readAll();
-    QJsonDocument doc = QJsonDocument::fromJson(data);
+    try {
+        nlohmann::json j;
+        file >> j;
 
-    if (!doc.isObject()) {
-        qWarning() << "Invalid JSON in config file:" << path;
-        return config;
+        if (!j.is_object()) {
+            std::cerr << "Invalid JSON in config file: " << path << "\n";
+            return config;
+        }
+
+        // extract values safely
+        if (j.contains("client_id"))     config.clientId     = j["client_id"].get<std::string>();
+        if (j.contains("client_secret")) config.clientSecret = j["client_secret"].get<std::string>();
+        if (j.contains("tmdb_bearer"))   config.tmdb_bearer  = j["tmdb_bearer"].get<std::string>();
+        if (j.contains("host"))          config.host         = j["host"].get<std::string>();
+        if (j.contains("port"))          config.port         = j["port"].get<int>();
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error parsing config file: " << e.what() << "\n";
     }
-
-    QJsonObject obj = doc.object();
-    config.clientId = obj.value("client_id").toString();
-    config.clientSecret = obj.value("client_secret").toString();
-    config.tmdb_bearer = obj.value("tmdb_bearer").toString();
-    config.host = obj.value("host").toString().toStdString();
-    config.port = obj.value("port").toInt();
 
     return config;
 }

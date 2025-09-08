@@ -18,7 +18,7 @@ QJsonArray makeRequestNoAuth(const QString &endpoint, const TraktConfig &config)
     QNetworkRequest request(QUrl(endpoint.toUtf8()));
     request.setRawHeader("Content-Type", "application/json");
     request.setRawHeader("trakt-api-version", "2");
-    request.setRawHeader("trakt-api-key", config.clientId.toUtf8());
+    request.setRawHeader("trakt-api-key", config.clientId.c_str());
     request.setRawHeader("User-Agent", "BetterWatchlist/1.0.0"); // required
 
 

@@ -52,12 +52,12 @@ int main(int argc, char *argv[])
 
 
     //upcoming
-    routes.registerEndpoint("/upcoming/in_theaters",in_theaters);
-    routes.registerEndpoint("/upcoming/unreleased",unreleased);
+    routes.registerEndpoint("/upcoming/in_theaters",in_theaters,"movies");
+    routes.registerEndpoint("/upcoming/unreleased",unreleased,"movies");
     routes.registerEndpoint("/upcoming", json{
     {"in_theaters", in_theaters},
     {"unreleased",  unreleased}
-    });
+    },"movies");
 
 
     // https://api.trakt.tv/{movies/shows}/played/monthly

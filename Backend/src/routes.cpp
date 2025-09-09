@@ -37,6 +37,10 @@ void Routes::registerEndpoint(const std::string& path, const json& staticData) {
         if (tokens.size() == 2) {
             // check if already exists
             if (!routes_available.contains(full_path)) {
+                if (!routes_available[full_path].contains("content-type")) {
+                    routes_available[full_path]["content-type"] = json::array();
+                }
+                routes_available[full_path]["content-type"].push_back(tokens[1]);
                 // only insert "self" if no sub endpoints were registered
                 routes_available[full_path]["name"] = tokens[1];
             }else {
@@ -45,6 +49,53 @@ void Routes::registerEndpoint(const std::string& path, const json& staticData) {
             }
         } else if (tokens.size() == 3) {
             std::string last_element = tokens[2];
+            if (!routes_available[full_path].contains("content-type")) {
+                routes_available[full_path]["content-type"] = json::array();
+            }
+            routes_available[full_path]["content-type"].push_back(last_element);
+            routes_available[full_path][full_path+"/"+last_element] = last_element;
+        }
+
+        handlers["/api"+path] = [staticData](const httplib::Request&) {
+            return staticData;
+        };
+    }else {
+        handlers["/api"] = [staticData](const httplib::Request&) {
+            return staticData;
+        };
+    }
+}
+
+void Routes::registerEndpoint(const std::string& path, const json& staticData, const std::string& type) {
+    if (path != "/api") {
+        auto tokens = split_by_delimiter(path, '/');
+
+        // build full path
+        std::string full_path = "/api/" + tokens[1];
+
+        if (tokens.size() == 2) {
+            // check if already exists
+            if (!routes_available.contains(full_path)) {
+                if (!routes_available[full_path].contains("content-type")) {
+                    routes_available[full_path]["content-type"] = json::array();
+                }
+                routes_available[full_path]["content-type"].push_back(type);
+                // only insert "self" if no sub endpoints were registered
+                routes_available[full_path]["name"] = tokens[1];
+            }else {
+                if (!routes_available[full_path].contains("content-type")) {
+                    routes_available[full_path]["content-type"] = json::array();
+                }
+                routes_available[full_path]["content-type"].push_back(type);
+                routes_available[full_path][full_path] = "both";
+                routes_available[full_path]["name"] = tokens[1];
+            }
+        } else if (tokens.size() == 3) {
+            std::string last_element = tokens[2];
+            if (!routes_available[full_path].contains("content-type")) {
+                routes_available[full_path]["content-type"] = json::array();
+            }
+            routes_available[full_path]["content-type"].push_back(type);
             routes_available[full_path][full_path+"/"+last_element] = last_element;
         }
 

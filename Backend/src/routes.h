@@ -25,6 +25,7 @@ using EndpointHandler = std::function<json(const httplib::Request&)>;
 class Routes {
 public:
     void registerEndpoint(const std::string& path, const json& staticData);
+    void registerEndpoint(const std::string& path, const json& staticData, const std::string& type);
     void bindToServer(httplib::Server& svr);
     json api_routes_available();
 private:

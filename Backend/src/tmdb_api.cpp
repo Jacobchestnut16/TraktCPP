@@ -29,14 +29,14 @@ nlohmann::json makeTMDBRequest(const std::string &endpoint, const TraktConfig &c
         curl_easy_setopt(curl, CURLOPT_URL, endpoint.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-        // curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L); // follow redirects
-        // curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);        // see request/response
 
 
         curl_slist *headers = NULL;
         headers = curl_slist_append(headers, "accept: application/json");
         std::string authHeader = "Authorization: Bearer " + config.tmdb_bearer;
         headers = curl_slist_append(headers, authHeader.c_str());
+
+        //apply the headers
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
         res = curl_easy_perform(curl);

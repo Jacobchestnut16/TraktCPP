@@ -26,12 +26,11 @@ class Routes {
 public:
     void registerEndpoint(const std::string& path, const json& staticData);
     void bindToServer(httplib::Server& svr);
-
+    json api_routes_available();
 private:
     std::unordered_map<std::string, EndpointHandler> handlers;
 };
 
-json qJsonArrayToJson(QJsonArray array);
 
 void registerThreeRoutes(Routes& routes, const std::string& path, const json& movieData, const json& showData);
 

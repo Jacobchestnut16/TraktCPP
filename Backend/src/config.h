@@ -10,9 +10,7 @@ struct TraktConfig {
     std::string clientId;
     std::string clientSecret;
     std::string tmdb_bearer;
-    std::string host;
-    int port;
-    // QString accessToken; // future: store/retrieve access token
+    // json accessToken; // future: store/retrieve access token
 };
 
 // Load configuration from JSON file

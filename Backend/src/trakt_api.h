@@ -6,11 +6,12 @@
 #define BACKEND_TRAKT_API_H
 #include <QJsonArray>
 #include <config.h>
+#include "json.hpp"
 
 
-QString const TRAKT_BASE = "https://api.trakt.tv";
+std::string const TRAKT_BASE = "https://api.trakt.tv";
 
-QJsonArray makeRequestNoAuth(const QString &endpoint, const TraktConfig &config);
+nlohmann::json makeRequestNoAuth(const std::string &endpoint, const TraktConfig &config);
 
 
 // TraktAPI trakt(cfg);

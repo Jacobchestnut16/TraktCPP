@@ -6,7 +6,8 @@
 #include <tmdb_api.h>
 #include <routes.h>
 #include <data_store.h>
-#include <QJsonDocument>
+
+#include "json.hpp"
 
 #include "httplib.h"
 
@@ -59,27 +60,48 @@ int main(int argc, char *argv[])
     });
 
 
+    // https://api.trakt.tv/{movies/shows}/played/monthly
+     json movies_played_trakt = makeRequestNoAuth(TRAKT_BASE+"/movies/played/monthly", config);
+    json movies_played = json::array();
+    for (auto &entry : movies_played_trakt) {
+        int tmdb_film_id = entry["movie"]["ids"]["tmdb"].get<int>();
+        movies_played.push_back( makeTMDBRequest(TMDB_BASE+"/movie/"+std::to_string(tmdb_film_id), config));
+    }
+
+     json shows_played_trakt = makeRequestNoAuth(TRAKT_BASE+"/shows/played/monthly", config);
+    json shows_played = json::array();
+    for (auto &entry : shows_played_trakt) {
+        int tmdb_film_id = entry["show"]["ids"]["tmdb"].get<int>();
+        shows_played.push_back( makeTMDBRequest(TMDB_BASE+"/tv/"+std::to_string(tmdb_film_id), config));
+    }
+
+    registerThreeRoutes(
+        routes,
+        "/most_played",
+        movies_played,
+        shows_played);
 
 
+     // https://api.trakt.tv/movies/watched/monthly
+    json movies_watched_trakt = makeRequestNoAuth(TRAKT_BASE+"/movies/watched/monthly", config);
+    json movies_watched = json::array();
+    for (auto &entry : movies_watched_trakt) {
+        int tmdb_film_id = entry["movie"]["ids"]["tmdb"].get<int>();
+        movies_played.push_back( makeTMDBRequest(TMDB_BASE+"/movie/"+std::to_string(tmdb_film_id), config));
+    }
 
-//    // https://api.trakt.tv/{movies/shows}/played/monthly
-//     QJsonArray movies_played = makeRequestNoAuth(TMDB_BASE+"/movies/played/monthly", config);
-//     QJsonArray shows_played = makeRequestNoAuth(TMDB_BASE+"/shows/played/monthly", config);
-//
-//
-//     // todo: transfer everything from trakt to
-//     // https://api.themoviedb.org/3/movie/{id} or https://api.themoviedb.org/3/tv/{id}
-//     // then three routes
-//
-//     registerThreeRoutes(routes, "/most_played",
-// qJsonArrayToJson(makeRequestNoAuth(TMDB_BASE+"/movies/played/monthly", config)),
-// qJsonArrayToJson(makeRequestNoAuth(TMDB_BASE+"/shows/played/monthly", config)));
-//
-//
-//     // https://api.trakt.tv/movies/watched/monthly
-//     registerThreeRoutes(routes, "/most_watched",
-// qJsonArrayToJson(makeRequestNoAuth(TMDB_BASE+"/movies/watched/monthly", config)),
-// qJsonArrayToJson(makeRequestNoAuth(TMDB_BASE+"/shows/watched/monthly", config)));
+    json shows_watched_trakt = makeRequestNoAuth(TRAKT_BASE+"/shows/watched/monthly", config);
+    json shows_watched = json::array();
+    for (auto &entry : shows_played_trakt) {
+        int tmdb_film_id = entry["show"]["ids"]["tmdb"].get<int>();
+        shows_played.push_back( makeTMDBRequest(TMDB_BASE+"/tv/"+std::to_string(tmdb_film_id), config));
+    }
+
+    registerThreeRoutes(
+        routes,
+        "/most_watched",
+        movies_played,
+        shows_played);
 
     // recommended → user-personalized picks.
     // upcoming → unreleased but scheduled.
@@ -96,9 +118,12 @@ int main(int argc, char *argv[])
     // todo: get 3-6 recommendations per film based on rating 3 no rating 6 highest rating
     // todo: propose: considerations to shorten the list [newest films, most popular, oldest films]
 
+    json routes_available = routes.api_routes_available();
+    std::cerr << "/api found: " << routes_available.dump() << "\n" << std::flush;
 
+    routes.registerEndpoint("/api",routes_available);
     routes.bindToServer(svr);
-    std::cout << "Server running on http://localhost:" << 8080 << "\n";
+    std::cout << "Server running on http://localhost:" << 8080 << "\n" << std::flush;;
     svr.listen("0.0.0.0", 8080);
 
     return 0;

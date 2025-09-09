@@ -1,167 +1,103 @@
-import './App.css'
-
-// frontend/src/App.jsx
 import { useEffect, useState } from "react";
-import {getPopular, getPosterPathBase, getTopRated} from "./api/fetchData";
+import './App.css';
+import Row from "./components/Row";
 
 
-function App() {
-    const [popData, setPopData] = useState(null);
-    const [topData, setTopData] = useState(null);
-    const [basePath, setBasePath] = useState(null);
+async function fetchEndpoint(url) {
+    const res = await fetch(`http://localhost:3001${url}`);
+    return res.json();
+}
 
-    useEffect(() => {
-        getPopular().then(setPopData);
-    }, []);
-    useEffect(() => {
-        getTopRated().then(setTopData);
-    }, []);
-
-    useEffect(() =>{
-        getPosterPathBase().then(setBasePath)
-    },[])
-
-    if (!popData || !topData) return <p>Loading...</p>;
+function formatTitle(str) {
+    return str
+        .replace(/_/g, " ")            // replace underscores with spaces
+        .replace(/\b\w/g, c => c.toUpperCase()); // capitalize each word
+}
+function DataTable({ title, items, basePath, isShow }) {
+    if (!Array.isArray(items) || items.length === 0) {
+        return (
+            <div>
+                <h2>{title}</h2>
+                <p>No data available</p>
+            </div>
+        );
+    }
 
     return (
         <div>
-            <h1>Trending</h1>
+            <Row
+                title={title}
+                items={items}
+                basePath={basePath}
+                isMovie={!isShow}
+            />
+        </div>
+    );
+}
 
-            <h2>Movies</h2>
-            <table border="1" cellPadding="6">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Title</th>
-                    <th>Released on</th>
-                    <th>Votes</th>
-                </tr>
-                </thead>
-                <tbody>
-                {popData.movies.map((item, index) => (
-                    <tr key={index}>
-                        <td>
-                            {item.poster_path ? (
-                                <img
-                                    src={basePath + item.poster_path}
-                                    alt={item.title}
-                                    width={80}
-                                />
-                            ) : (
-                                <span>No image</span>
-                            )}
-                        </td>
-                        <td>{item.title}</td>
-                        <td>{item.release_date}</td>
-                        <td>{item.vote_average}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
 
-            <h2>Shows</h2>
-            <table border="1" cellPadding="6">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Title</th>
-                    <th>Released on</th>
-                    <th>Votes</th>
-                </tr>
-                </thead>
-                <tbody>
-                {popData.shows.map((item, index) => (
-                    <tr key={index}>
-                        <td>
-                            {item.poster_path ? (
-                                <img
-                                    src={basePath + item.poster_path}
-                                    alt={item.title}
-                                    width={80}
-                                />
-                            ) : (
-                                <span>No image</span>
-                            )}
-                        </td>
-                        <td>{item.name}</td>
-                        <td>{item.first_air_date}</td>
-                        <td>{item.vote_average}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+function App() {
+    const [routes, setRoutes] = useState(null);
+    const [data, setData] = useState({});
+    const [basePath, setBasePath] = useState("https://image.tmdb.org/t/p/original");
 
-            <div>
-                <h1>Top Rated</h1>
+    useEffect(() => {
+        fetch("http://localhost:3001/api")
+            .then((res) => res.json())
+            .then(setRoutes);
+    }, []);
 
-                <h2>Movies</h2>
-                <table border="1" cellPadding="6">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>Title</th>
-                        <th>Released on</th>
-                        <th>Votes</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {topData.movies.map((item, index) => (
-                        <tr key={index}>
-                            <td>
-                                {item.poster_path ? (
-                                    <img
-                                        src={basePath + item.poster_path}
-                                        alt={item.title}
-                                        width={80}
-                                    />
-                                ) : (
-                                    <span>No image</span>
-                                )}
-                            </td>
-                            <td>{item.title}</td>
-                            <td>{item.release_date}</td>
-                            <td>{item.vote_average}</td>
-                        </tr>
+    useEffect(() => {
+        if (!routes) return;
+
+        const fetchAll = async () => {
+            let results = {};
+            for (const [path, info] of Object.entries(routes)) {
+                const endpointName = info.name;
+                results[endpointName] = {};
+
+                for (const [key, val] of Object.entries(info)) {
+                    if (val === "name" || val === "both") continue;
+                    if (key.startsWith(path)) {
+                        const subKey = val; // e.g. "movies", "shows"
+                        try {
+                            const json = await fetchEndpoint(key);
+                            results[endpointName][subKey] = Array.isArray(json) ? json : [];
+                        } catch (err) {
+                            console.error(`Error fetching ${key}:`, err);
+                            results[endpointName][subKey] = [];
+                        }
+                    }
+                }
+            }
+            setData(results);
+        };
+
+        fetchAll();
+    }, [routes]);
+
+    if (!routes) return <p>Loading endpoints...</p>;
+    if (Object.keys(data).length === 0) return <p>Loading data...</p>;
+
+    return (
+        <div>
+            {Object.entries(data).map(([endpointName, subData]) => (
+                <div key={endpointName}>
+                    <h1>{formatTitle(endpointName)}</h1>
+                    {Object.entries(subData).map(([subKey, items]) => (
+                        <DataTable
+                            key={subKey}
+                            title={subKey}
+                            items={items}
+                            basePath={basePath}
+                            isShow={subKey === "shows"}
+                        />
                     ))}
-                    </tbody>
-                </table>
-
-                <h2>Shows</h2>
-                <table border="1" cellPadding="6">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>Title</th>
-                        <th>Released on</th>
-                        <th>Votes</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {topData.shows.map((item, index) => (
-                        <tr key={index}>
-                            <td>
-                                {item.poster_path ? (
-                                    <img
-                                        src={basePath + item.poster_path}
-                                        alt={item.title}
-                                        width={80}
-                                    />
-                                ) : (
-                                    <span>No image</span>
-                                )}
-                            </td>
-                            <td>{item.name}</td>
-                            <td>{item.first_air_date}</td>
-                            <td>{item.vote_average}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
-            <p>Images powered by <a href='https://tmdb.org'>TMDB</a></p>
+                </div>
+            ))}
+            <p>Images powered by <a href="https://tmdb.org">TMDB</a></p>
         </div>
     );
 }
 
 export default App;
-

@@ -1,0 +1,27 @@
+.card {
+    width: 150px;          /* lock card width */
+    flex: 0 0 auto;
+    text-align: center;
+    padding: 1rem;
+}
+
+.card-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;       /* limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;         /* allow wrapping */
+    font-size: 0.9rem;
+    line-height: 1.2rem;
+    max-height: calc(1.2rem * 2); /* visually enforce 2 lines */
+    margin-top: 0.5rem;
+}
+
+.cards-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 1rem;
+    gap: 1rem; /* tighten spacing */
+}

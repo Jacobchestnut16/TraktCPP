@@ -84,30 +84,55 @@ services:
 
 This app comes with a secondary api that the front end uses, but this api is also exposed to the host. This means you can queary and use the api too.
 
-### Query just Shows or Movies
+### Query options
+#### Individual option
 ```
-http://localhost:3001/api/[endpoint]/[shows/movies]
+http://localhost:3001/api/[endpoint]/[option]
+```
+#### All options
+```
+http://localhost:3001/api/[endpoint]
 ```
 
-### Popular
+### Endpoints list
 ```
-http://localhost:3001/api/popular
-```
-### Top Rated
-```
-http://localhost:3001/api/top_rated
-```
-### Upcoming
-```
-http://localhost:3001/api/upcoming
-```
-#### In Theaters
-```
-http://localhost:3001/api/upcoming/in_theaters
-```
-#### Unreleased (Comming soon)
-```
-http://localhost:3001/api/upcoming/unreleased
+{
+    "/api/most_played":
+    {
+        "/api/most_played":"both",
+        "/api/most_played/movies":"movies",
+        "/api/most_played/shows":"shows",
+        "name":"most_played"
+    },
+    "/api/most_watched":
+    {
+        "/api/most_watched":"both",
+        "/api/most_watched/movies":"movies",
+        "/api/most_watched/shows":"shows",
+        "name":"most_watched"
+    },
+    "/api/popular":
+    {
+        "/api/popular":"both",
+        "/api/popular/movies":"movies",
+        "/api/popular/shows":"shows",
+        "name":"popular"
+    },
+    "/api/top_rated":
+    {
+        "/api/top_rated":"both",
+        "/api/top_rated/movies":"movies",
+        "/api/top_rated/shows":"shows",
+        "name":"top_rated"
+    },
+    "/api/upcoming":
+    {
+        "/api/upcoming":"both",
+        "/api/upcoming/in_theaters":in_theaters",
+        "/api/upcoming/unreleased":"unreleased",
+        "name":"upcoming"
+    }
+}
 ```
 
 

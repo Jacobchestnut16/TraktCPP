@@ -26,6 +26,7 @@ class Routes {
 public:
     void registerEndpoint(const std::string& path, const json& staticData);
     void registerEndpoint(const std::string& path, const json& staticData, const std::string& type);
+    void setUnregisteredRout(const std::string& path, const json& staticData);
     void bindToServer(httplib::Server& svr);
     json api_routes_available();
 private:

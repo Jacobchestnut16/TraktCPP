@@ -32,6 +32,7 @@ TraktConfig loadConfig(const std::string& path) {
         if (j.contains("client_id"))     config.clientId     = j["client_id"].get<std::string>();
         if (j.contains("client_secret")) config.clientSecret = j["client_secret"].get<std::string>();
         if (j.contains("tmdb_bearer"))   config.tmdb_bearer  = j["tmdb_bearer"].get<std::string>();
+        if (j.contains("accessToken"))   config.accessToken= j["accessToken"].get<std::string>();
 
     } catch (const std::exception& e) {
         std::cerr << "Error parsing config file: " << e.what() << "\n";

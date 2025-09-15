@@ -60,6 +60,71 @@ int main(int argc, char *argv[])
     },"movies");
 
 
+    // https://api.trakt.tv/lists/trending/[personal , official]
+
+    json trending_official_list = makeRequestNoAuth(TRAKT_BASE+"/lists/trending", config);
+    int start_index = 6;
+    for (int list_i = start_index; list_i < 3+start_index; list_i++) {
+
+        std::string list_slug = "";
+        if (trending_official_list[list_i]["list"]["ids"].contains("slug")
+            && !trending_official_list[list_i]["list"]["ids"]["slug"].is_null()
+            ){
+            list_slug = trending_official_list[list_i]["list"]["ids"]["slug"].get<std::string>();
+        }
+
+        std::string author = "";
+        if (trending_official_list[list_i]["list"]["user"].contains("name")
+            && !trending_official_list[list_i]["list"]["user"]["name"].is_null()
+            ) {
+            author = trending_official_list[list_i]["list"]["user"]["name"].get<std::string>();
+        } else if (trending_official_list[list_i]["list"]["user"].contains("username")
+            && !trending_official_list[list_i]["list"]["user"]["username"].is_null()
+            ) {
+            // fallback to username if display name missing
+            author = trending_official_list[list_i]["list"]["user"]["username"].get<std::string>();
+        } else {
+            author = "Unknown";
+        }
+        // https://api.trakt.tv/lists/[id]/items/[movie , show , season , episode , person]
+        int first_list_id = trending_official_list[list_i]["list"]["ids"]["trakt"].get<int>();
+        json trending_official_list_items_movies = makeRequestNoAuth(
+            TRAKT_BASE
+            +"/lists/"
+            +std::to_string(first_list_id)
+            +"/items/movie?limit=15",
+            config);
+
+        json movies_tended_list = json::array();
+        if (trending_official_list_items_movies.size() > 0) {
+            for (auto &entry : trending_official_list_items_movies) {
+                int tmdb_film_id = entry["movie"]["ids"]["tmdb"].get<int>();
+                movies_tended_list.push_back( makeTMDBRequest(TMDB_BASE+"/movie/"+std::to_string(tmdb_film_id), config));
+            }
+        }
+
+        json trending_official_list_items_shows = makeRequestNoAuth(
+        TRAKT_BASE
+            +"/lists/"
+            +std::to_string(first_list_id)
+            +"/items/show?limit=15",
+            config);
+
+        json shows_tended_list = json::array();
+        if (trending_official_list_items_shows.size() > 0) {
+            for (auto &entry : trending_official_list_items_shows) {
+                int tmdb_film_id = entry["show"]["ids"]["tmdb"].get<int>();
+                shows_tended_list.push_back( makeTMDBRequest(TMDB_BASE+"/tv/"+std::to_string(tmdb_film_id), config));
+            }
+        }
+        registerThreeRoutes(routes,
+            "/" + list_slug + "-by-" + author,
+            movies_tended_list,
+            shows_tended_list);
+    }
+
+
+
     // https://api.trakt.tv/{movies/shows}/played/monthly
      json movies_played_trakt = makeRequestNoAuth(TRAKT_BASE+"/movies/played/monthly", config);
     json movies_played = json::array();
@@ -82,26 +147,6 @@ int main(int argc, char *argv[])
         shows_played);
 
 
-     // https://api.trakt.tv/movies/watched/monthly
-    json movies_watched_trakt = makeRequestNoAuth(TRAKT_BASE+"/movies/watched/monthly", config);
-    json movies_watched = json::array();
-    for (auto &entry : movies_watched_trakt) {
-        int tmdb_film_id = entry["movie"]["ids"]["tmdb"].get<int>();
-        movies_played.push_back( makeTMDBRequest(TMDB_BASE+"/movie/"+std::to_string(tmdb_film_id), config));
-    }
-
-    json shows_watched_trakt = makeRequestNoAuth(TRAKT_BASE+"/shows/watched/monthly", config);
-    json shows_watched = json::array();
-    for (auto &entry : shows_played_trakt) {
-        int tmdb_film_id = entry["show"]["ids"]["tmdb"].get<int>();
-        shows_played.push_back( makeTMDBRequest(TMDB_BASE+"/tv/"+std::to_string(tmdb_film_id), config));
-    }
-
-    registerThreeRoutes(
-        routes,
-        "/most_watched",
-        movies_played,
-        shows_played);
 
     // recommended → user-personalized picks.
     // upcoming → unreleased but scheduled.

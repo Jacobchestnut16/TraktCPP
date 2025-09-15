@@ -5,12 +5,14 @@
 #ifndef BACKEND_CONFIG_H
 #define BACKEND_CONFIG_H
 #include <QString>
+#include "json.hpp"
+#include "routes.h"
 
 struct TraktConfig {
     std::string clientId;
     std::string clientSecret;
     std::string tmdb_bearer;
-    // json accessToken; // future: store/retrieve access token
+    json accessToken; // future: store/retrieve access token
 };
 
 // Load configuration from JSON file

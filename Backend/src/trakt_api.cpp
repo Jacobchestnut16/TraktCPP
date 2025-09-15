@@ -76,3 +76,62 @@ nlohmann::json makeRequestNoAuth(const std::string &endpoint, const TraktConfig 
     }
 }
 
+void getCode(const TraktConfig &config) {
+    // https://api.trakt.tv/oauth/authorize?response_type=code&client_id=%20&redirect_uri=%20&state=%20
+    /*
+     * set config.accessToken = {'code': TheReturnedCode }
+     */
+}
+void getTokens(const TraktConfig &config) {
+    /*
+     * if config.accessToken["refresh_token"] does not exist:
+     */
+
+    //     curl --include \
+    //      --request POST \
+    //      --header "Content-Type: application/json" \
+    //      --data-binary "{
+    //     \"code\": \"fd0847dbb559752d932dd3c1ac34ff98d27b11fe2fea5a864f44740cd7919ad0\",          <--  config.accessToken["code"]
+    //     \"client_id\": \"9b36d8c0db59eff5038aea7a417d73e69aea75b41aac771816d2ef1b3109cc2f\",     <--  config.clientId
+    //     \"client_secret\": \"d6ea27703957b69939b8104ed4524595e210cd2e79af587744a7eb6e58f5b3d2\", <--  config.client_secret
+    //     \"redirect_uri\": \"urn:ietf:wg:oauth:2.0:oob\",                                         <-- not sure what this should be
+    //     \"grant_type\": \"authorization_code\"
+    // }" \
+    // 'https://api.trakt.tv/oauth/token'
+
+    /*
+     * else :
+     */
+
+//     curl --include \
+//      --request POST \
+//      --header "Content-Type: application/json" \
+//      --data-binary "{
+//     \"refresh_token\": \"fd0847dbb559752d932dd3c1ac34ff98d27b11fe2fea5a864f44740cd7919ad0\",  <--  config.accessToken["code"]
+//     \"client_id\": \"9b36d8c0db59eff5038aea7a417d73e69aea75b41aac771816d2ef1b3109cc2f\",      <--  config.clientId
+//     \"client_secret\": \"d6ea27703957b69939b8104ed4524595e210cd2e79af587744a7eb6e58f5b3d2\",  <--  config.client_secret
+//     \"redirect_uri\": \"urn:ietf:wg:oauth:2.0:oob\",                                          <-- not sure what this should be
+//     \"grant_type\": \"refresh_token\"
+// }" \
+// 'https://api.trakt.tv/oauth/token'
+
+    /*
+     * update config.accessToken = {
+          "access_token" : access_token-retuned,
+          "token_type"   : token_type-returned,
+          "expires_in"   : expires_in-returned,
+          "refresh_token": refresh_token-returned,
+          "scope"        : scope-returned,
+          "created_at"   : created_at-returned
+        }
+     */
+}
+void authorize(const TraktConfig &config) {
+    if (/*config.accessToken is null ||*/config.accessToken.empty()) {
+        getCode(config);
+        getTokens(config);
+    }else {
+        getTokens(config);
+    }
+}
+

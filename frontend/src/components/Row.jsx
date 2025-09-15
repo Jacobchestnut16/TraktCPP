@@ -5,6 +5,7 @@ import "./Row.css";
 function formatTitle(str) {
     return str
         .replace(/_/g, " ")            // replace underscores with spaces
+        .replace(/-/g," ")
         .replace(/\b\w/g, c => c.toUpperCase()); // capitalize each word
 }
 function Row({ title, items, basePath, isMovie = true }) {

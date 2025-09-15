@@ -11,6 +11,16 @@
 
 json routes_available = {};
 
+template <typename T>
+void push_back_unique(json &loc, const T &data) {
+    for (const auto& el : loc) {
+        if (el == data) {
+            return; // already exists
+        }
+    }
+    loc.push_back(data);
+}
+
 std::vector<std::string> split_by_delimiter(const std::string& str, char delimiter) {
     std::vector<std::string> tokens;
     size_t start = 0;
@@ -25,7 +35,11 @@ std::vector<std::string> split_by_delimiter(const std::string& str, char delimit
     return tokens;
 }
 
-
+void Routes::setUnregisteredRout(const std::string& path, const json& staticData) {
+    handlers["/api"] = [staticData](const httplib::Request&) {
+        return staticData;
+    };
+}
  // Writes a path endpoint /trending/moives and stores the json blob
 void Routes::registerEndpoint(const std::string& path, const json& staticData) {
     if (path != "/api") {
@@ -52,7 +66,7 @@ void Routes::registerEndpoint(const std::string& path, const json& staticData) {
             if (!routes_available[full_path].contains("content-type")) {
                 routes_available[full_path]["content-type"] = json::array();
             }
-            routes_available[full_path]["content-type"].push_back(last_element);
+            push_back_unique(routes_available[full_path]["content-type"], last_element);
             routes_available[full_path][full_path+"/"+last_element] = last_element;
         }
 
@@ -79,14 +93,14 @@ void Routes::registerEndpoint(const std::string& path, const json& staticData, c
                 if (!routes_available[full_path].contains("content-type")) {
                     routes_available[full_path]["content-type"] = json::array();
                 }
-                routes_available[full_path]["content-type"].push_back(type);
+                push_back_unique(routes_available[full_path]["content-type"], type);
                 // only insert "self" if no sub endpoints were registered
                 routes_available[full_path]["name"] = tokens[1];
             }else {
                 if (!routes_available[full_path].contains("content-type")) {
                     routes_available[full_path]["content-type"] = json::array();
                 }
-                routes_available[full_path]["content-type"].push_back(type);
+                push_back_unique(routes_available[full_path]["content-type"], type);
                 routes_available[full_path][full_path] = "both";
                 routes_available[full_path]["name"] = tokens[1];
             }
@@ -95,7 +109,7 @@ void Routes::registerEndpoint(const std::string& path, const json& staticData, c
             if (!routes_available[full_path].contains("content-type")) {
                 routes_available[full_path]["content-type"] = json::array();
             }
-            routes_available[full_path]["content-type"].push_back(type);
+            push_back_unique(routes_available[full_path]["content-type"], type);
             routes_available[full_path][full_path+"/"+last_element] = last_element;
         }
 

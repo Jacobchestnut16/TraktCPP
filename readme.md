@@ -18,7 +18,7 @@ Trakt Plus is an extension app designed to improve the Trakt experience by enhan
 * Docker setup to simplify configuration and deployment.
 ___
 # Setup
-Create a config.json or copy the example-config to config.json file at:`traktplus/backend/config/config.json`
+Create a config.json or copy the example-config to config.json file at:`config/config.json`
 Add your credentials:
 ```
 

@@ -11,16 +11,12 @@ async function fetchEndpoint(url) {
 function formatTitle(str) {
     return str
         .replace(/_/g, " ")            // replace underscores with spaces
+        .replace(/-/g," ")
         .replace(/\b\w/g, c => c.toUpperCase()); // capitalize each word
 }
 function DataTable({ title, items, basePath, isShow }) {
     if (!Array.isArray(items) || items.length === 0) {
-        return (
-            <div>
-                <h2>{title}</h2>
-                <p>No data available</p>
-            </div>
-        );
+        return ("");
     }
 
     return (
@@ -81,6 +77,21 @@ function App() {
 
     return (
         <div>
+            <div>
+                <nav>
+                    <ul>
+                        <li>
+                            <a href="#">Trakt Plus</a>
+                        </li>
+                        <li>
+                            <a href="#movies">Movies</a>
+                        </li>
+                        <li>
+                            <a href="#shows">Shows</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
             {Object.entries(data).map(([endpointName, subData]) => (
                 <div key={endpointName}>
                     <h1>{formatTitle(endpointName)}</h1>

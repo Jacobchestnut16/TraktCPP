@@ -12,7 +12,9 @@
 std::string const TRAKT_BASE = "https://api.trakt.tv";
 
 nlohmann::json makeRequestNoAuth(const std::string &endpoint, const TraktConfig &config);
-
+void getCode(const TraktConfig &config);
+void getTokens(const TraktConfig &config);
+void authorize(const TraktConfig &config);
 
 // TraktAPI trakt(cfg);
 

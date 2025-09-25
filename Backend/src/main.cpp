@@ -11,6 +11,12 @@
 
 #include "httplib.h"
 
+void add_cors_headers(httplib::Response &res) {
+    res.set_header("Access-Control-Allow-Origin", "*");
+    res.set_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.set_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -167,7 +173,13 @@ int main(int argc, char *argv[])
     std::cerr << "/api found: " << routes_available.dump() << "\n" << std::flush;
 
     routes.registerEndpoint("/api",routes_available);
+
     routes.bindToServer(svr);
+
+    svr.set_post_routing_handler([](const httplib::Request &, httplib::Response &res) {
+        add_cors_headers(res);
+    });
+
     std::cout << "Server running on http://localhost:" << 8080 << "\n" << std::flush;;
     svr.listen("0.0.0.0", 8080);
 

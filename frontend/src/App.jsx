@@ -53,7 +53,7 @@ function App() {
                 results[endpointName] = {};
 
                 for (const [key, val] of Object.entries(info)) {
-                    if (val === "name" || val === "both") continue;
+                    if (val === "name" || val === "both" || val === "content-type") continue;
                     if (key.startsWith(path)) {
                         const subKey = val; // e.g. "movies", "shows"
                         try {

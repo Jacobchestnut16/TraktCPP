@@ -2,3 +2,4 @@
 .cache/*
 scripts/*
 config/config.json
+config/.env

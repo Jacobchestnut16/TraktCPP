@@ -1,34 +1,20 @@
-import sqlite3
 import json
-from app.utils import config
 from pathlib import Path
+from typing import Optional
+from app.utils import config
 
-db_path = Path(config.DATABASE_URL.replace("sqlite:///", ""))
+file_path = Path("./data/token.json")
 
 class TokenStore:
     def __init__(self):
-        db_path.parent.mkdir(parents=True, exist_ok=True)
-        self.conn = sqlite3.connect(str(db_path), check_same_thread=False)
-        self._init()
-
-    def _init(self):
-        cur = self.conn.cursor()
-        cur.execute("""CREATE TABLE IF NOT EXISTS tokens (
-                       id INTEGER PRIMARY KEY,
-                       payload TEXT NOT NULL
-                       )""")
-        self.conn.commit()
+        file_path.parent.mkdir(parents=True, exist_ok=True)
 
     def save_token(self, payload: dict):
-        cur = self.conn.cursor()
-        cur.execute("DELETE FROM tokens")
-        cur.execute("INSERT INTO tokens(payload) VALUES(?)", (json.dumps(payload),))
-        self.conn.commit()
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(payload, f)
 
-    def get_token(self) -> dict | None:
-        cur = self.conn.cursor()
-        cur.execute("SELECT payload FROM tokens LIMIT 1")
-        row = cur.fetchone()
-        if not row:
+    def get_token(self) -> Optional[dict]:
+        if not file_path.exists():
             return None
-        return json.loads(row[0])
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)

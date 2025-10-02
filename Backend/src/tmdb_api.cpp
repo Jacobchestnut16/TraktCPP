@@ -57,7 +57,7 @@ nlohmann::json makeTMDBRequest(const std::string &endpoint, const TraktConfig &c
     }
 
     // Now parse JSON
-    std::cout << "response: " << readBuffer << "\n" << std::flush;
+    // std::cout << "response: " << readBuffer << "\n" << std::flush;
     try {
         nlohmann::json response = nlohmann::json::parse(readBuffer);
         if (response.contains("results")) {

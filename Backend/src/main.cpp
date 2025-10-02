@@ -5,6 +5,7 @@
 #include <trakt_api.h>
 #include <tmdb_api.h>
 #include <routes.h>
+#include "trakt_oauth.h"
 #include <data_store.h>
 
 #include "json.hpp"
@@ -20,6 +21,8 @@ void add_cors_headers(httplib::Response &res) {
 
 int main(int argc, char *argv[])
 {
+    httplib::Server svr;
+    Routes routes;
     QCoreApplication app(argc, argv);
 
 
@@ -27,15 +30,28 @@ int main(int argc, char *argv[])
     const char* configPath = std::getenv("CONFIG_PATH");
     TraktConfig config = loadConfig(configPath);
 
+    registerTraktOAuthCallback(svr);
 
-    // Make a call
-    httplib::Server svr;
-    Routes routes;
+    std::thread server_thread([&svr]() {
+        std::cout << "Server running on http://localhost:8080\n";
+        svr.listen("0.0.0.0", 8080);
+    });
 
-    // QJsonArray trendingMovies = makeRequestNoAuth(BASE+"movies/trending", config);
-    // QJsonArray trendingShows = makeRequestNoAuth(BASE+"shows/trending", config);
-    // json moviesJson = json::parse(QString(QJsonDocument(trendingMovies).toJson()).toStdString());
-    // json showsJson = json::parse(QString(QJsonDocument(trendingShows).toJson()).toStdString());
+    // Check if we have a saved access token
+    if (config.accessToken.empty()) {
+        std::string authUrl = generateTraktAuthUrl(config);
+        std::cout << config.redirectUri<<"\n"<< std::flush;
+        std::cout << "Go to this URL to authorize the app: " << authUrl << "\n" << std::flush;
+
+        std::string code = waitForOAuthCode();
+
+        nlohmann::json tokens = fetchTraktTokens(code, config);
+
+        config.accessToken = tokens;
+        saveConfig(configPath, config);
+        std::cout << "Trakt authorization complete.\n"<< std::flush;
+    }
+
 
 
 

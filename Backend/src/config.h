@@ -4,11 +4,13 @@
 
 #ifndef BACKEND_CONFIG_H
 #define BACKEND_CONFIG_H
-#include <QString>
+
+#pragma once
 #include "json.hpp"
 #include "routes.h"
 
 struct TraktConfig {
+    std::string redirectUri;
     std::string clientId;
     std::string clientSecret;
     std::string tmdb_bearer;
@@ -17,6 +19,6 @@ struct TraktConfig {
 
 // Load configuration from JSON file
 TraktConfig loadConfig(const std::string &path);
-
+void saveConfig(const std::string &path, const TraktConfig &config);
 
 #endif //BACKEND_CONFIG_H

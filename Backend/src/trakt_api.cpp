@@ -62,7 +62,7 @@ nlohmann::json makeRequestNoAuth(const std::string &endpoint, const TraktConfig 
         std::cerr << "Curl either could not be initialized or is not installed." << "\n" << std::flush;
     }
 
-    std::cout << "response: " << readBuffer << "\n" << std::flush;
+    // std::cout << "response: " << readBuffer << "\n" << std::flush;
     try {
         nlohmann::json response = nlohmann::json::parse(readBuffer);
         if (response.contains("results")) {

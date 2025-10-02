@@ -21,7 +21,9 @@ add_executable(Backend src/main.cpp
         src/routes.cpp
         src/routes.h
         src/tmdb_api.cpp
-        src/tmdb_api.h)
+        src/tmdb_api.h
+        src/trakt_oauth.cpp
+        src/trakt_oauth.h)
 
 
 target_link_libraries(Backend

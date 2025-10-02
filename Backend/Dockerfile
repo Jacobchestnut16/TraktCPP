@@ -9,10 +9,10 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy only build files first for caching
-COPY CMakeLists.txt ./
-COPY include/ include/
-COPY src/ src/
-COPY config/ config/
+COPY ../Cal/CMakeLists.txt ./
+COPY ../Cal/include/ include/
+COPY ../Cal/src/ src/
+COPY ../Cal/config/ config/
 
 
 RUN cmake -B build -S . && cmake --build build --config Release

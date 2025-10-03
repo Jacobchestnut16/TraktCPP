@@ -1,7 +1,7 @@
 services:
   backend:
     build: ./backend #Backend project dircotry
-    container_name: trakt_backend
+    container_name: backend
     ports:
       - "3001:8080" #The backend uses port 8080, 3001 is the port the frontend looks up
     volumes:
@@ -13,7 +13,7 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: trakt_frontend
+    container_name: frontend
     ports:
       - "3000:80" #NGINX runs 80 for the frontend change 3000 if you need a different port on your host
     depends_on:
